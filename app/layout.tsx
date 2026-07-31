@@ -1,18 +1,34 @@
 import type { Metadata } from "next";
+import localFont from "next/font/local";
 import "./globals.css";
+
+const grotesk = localFont({
+  src: "./fonts/space-grotesk.woff2",
+  variable: "--font-grotesk",
+  weight: "300 700",
+  display: "swap",
+});
+
+const mono = localFont({
+  src: "./fonts/jetbrains-mono.woff2",
+  variable: "--font-mono",
+  weight: "400 700",
+  display: "swap",
+});
+
+const description =
+  "One-person product studio on its own frequency: a piano-learning app live on the App Store, an AI menu reader in beta, and self-built attribution, subscription and marketing infrastructure behind them.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://j3d1.fm"),
   title: "J3D1.FM — Signal Over Noise",
-  description:
-    "An independent frequency for products, games and applied AI.",
+  description,
   alternates: {
     canonical: "/",
   },
   openGraph: {
     title: "J3D1.FM — Signal Over Noise",
-    description:
-      "An independent frequency for products, games and applied AI.",
+    description,
     url: "https://j3d1.fm",
     siteName: "J3D1.FM",
     type: "website",
@@ -28,8 +44,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "J3D1.FM — Signal Over Noise",
-    description:
-      "An independent frequency for products, games and applied AI.",
+    description,
     images: ["/og.png"],
   },
 };
@@ -41,7 +56,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className={`${grotesk.variable} ${mono.variable}`}>{children}</body>
     </html>
   );
 }

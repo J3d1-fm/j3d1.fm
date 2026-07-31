@@ -1,5 +1,16 @@
 J3D1.FM CHANGELOG
 
+Version 0.2.0 - 2026-07-31
+- Replaced the abstract manifesto with a real broadcast schedule: On Air
+  (Learn Piano, MenuSage, Crush Check, GetDesign), The Rack (UniversalMMP,
+  PurchaseKit, Marketworthy, Knowledge Vault) and Short Waves.
+- Linked the live App Store listing for Learn Piano: Play Songs and the
+  public GitHub repositories.
+- New visual system: glass cards, status chips, tuner dial, stat strip,
+  self-hosted Space Grotesk + JetBrains Mono via next/font/local.
+- Regenerated the Open Graph image to match the new design.
+- Kept the site pseudonymous and the copy grounded in the knowledge vault.
+
 Version 0.1.0 - 2026-07-31
 - Launched the first personal brand direction: SIGNAL OVER NOISE.
 - Added the responsive one-page experience for products, games and AI.
