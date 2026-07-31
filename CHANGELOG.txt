@@ -1,0 +1,8 @@
+J3D1.FM CHANGELOG
+
+Version 0.1.0 - 2026-07-31
+- Launched the first personal brand direction: SIGNAL OVER NOISE.
+- Added the responsive one-page experience for products, games and AI.
+- Added social sharing metadata and a bespoke Open Graph image.
+- Added automated GitHub Pages deployment and custom-domain support.
+- Tuned the hero typography for narrow mobile screens.

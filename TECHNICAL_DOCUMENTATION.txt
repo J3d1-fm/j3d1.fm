@@ -1,0 +1,40 @@
+J3D1.FM TECHNICAL DOCUMENTATION
+Version: 0.1.0
+Updated: 2026-07-31
+
+PURPOSE
+Static personal brand website for https://j3d1.fm.
+
+STACK
+- Next.js 16 static export
+- React 19
+- Node.js 22-25 build runtime
+- CSS-only responsive visual system and signal animation
+- GitHub Pages hosting
+
+STRUCTURE
+- app/page.tsx: page content and semantic structure
+- app/globals.css: complete visual system and responsive behavior
+- app/layout.tsx: metadata, canonical URL and social cards
+- public/og.png: social preview image
+- public/CNAME: custom domain declaration
+- .github/workflows/deploy.yml: production deployment
+- tests/site.test.mjs: exported-site acceptance checks
+
+LOCAL VALIDATION
+Run npm test and npm run check. The first command builds the static export and
+verifies the finished HTML, brand copy, absence of a personal name, custom
+domain and social image. The second command validates the TypeScript source.
+
+DEPLOYMENT
+Pushes to main deploy the contents of out/ with the official GitHub Pages
+workflow. Repository Pages settings must use GitHub Actions as the source.
+
+DOMAIN
+The apex domain j3d1.fm must point to GitHub Pages IP addresses. The repository
+custom domain is j3d1.fm. HTTPS is enabled in GitHub after DNS verification.
+
+SECURITY
+The site is fully static: no forms, cookies, analytics, secrets or server-side
+credentials are present. External links are limited to the owner's public
+GitHub and LinkedIn profiles.
