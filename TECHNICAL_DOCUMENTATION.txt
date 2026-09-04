@@ -1,6 +1,6 @@
 J3D1.FM TECHNICAL DOCUMENTATION
-Version: 0.1.0
-Updated: 2026-07-31
+Version: 0.2.1
+Updated: 2026-09-04
 
 PURPOSE
 Static personal brand website for https://j3d1.fm.
@@ -38,3 +38,8 @@ SECURITY
 The site is fully static: no forms, cookies, analytics, secrets or server-side
 credentials are present. External links are limited to the owner's public
 GitHub and LinkedIn profiles.
+
+SUPPLY-CHAIN CONTROLS
+All third-party GitHub Actions used by the Pages workflow are pinned to full
+commit SHAs. Human-readable major-version comments remain next to those pins;
+upgrades require resolving and reviewing a new SHA through the GitHub API.

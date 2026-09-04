@@ -1,5 +1,12 @@
 J3D1.FM CHANGELOG
 
+Version 0.2.1 - 2026-09-04
+- Pinned every GitHub Pages workflow action to the exact commit currently
+  resolved by its existing major-version tag.
+- Kept readable major-version comments beside the immutable SHAs so routine
+  action upgrades remain explicit and reviewable.
+- Synchronized package-lock and technical-documentation version markers.
+
 Version 0.2.0 - 2026-07-31
 - Replaced the abstract manifesto with a real broadcast schedule: On Air
   (Learn Piano, MenuSage, Crush Check, GetDesign), The Rack (UniversalMMP,
