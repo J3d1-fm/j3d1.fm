@@ -1,5 +1,21 @@
 J3D1.FM CHANGELOG
 
+Version 0.2.2 - 2026-10-19
+- Re-synced every portfolio status with the knowledge-vault entity cards:
+  Idle Cruise Liner Tycoon added to On Air (live on the App Store and Google
+  Play), Crush Check marked live on Google Play with iOS still in TestFlight,
+  MenuSage marked beta on both TestFlight and Google Play internal testing,
+  GetDesign described as a demo build on Cloud Run.
+- Refreshed The Rack copy: UniversalMMP now lists its SKAdNetwork backend,
+  postbacks, Swift/Kotlin/Unity SDKs and Meta Ads spend connector;
+  Marketworthy mentions its local video Director; Knowledge Vault mentions
+  the Obsidian second brain.
+- Added Getaway and Timber (public crash-game demos on GitHub Pages) to Short
+  Waves; Genhood now notes Bloghouse Rivals.
+- Updated the hero copy, social description, stat strip and section counters
+  to match (04 apps, 05 products on air, 08 short waves).
+- Extended the export test to cover the new live product.
+
 Version 0.2.1 - 2026-09-04
 - Pinned every GitHub Pages workflow action to the exact commit currently
   resolved by its existing major-version tag.

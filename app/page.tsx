@@ -18,7 +18,7 @@ type Wave = {
 };
 
 const stats: Array<[string, string]> = [
-  ["03", "apps in stores & betas"],
+  ["04", "apps in stores & betas"],
   ["04", "self-built backends"],
   ["11", "languages shipped"],
   ["01", "human, plus agents"],
@@ -35,25 +35,32 @@ const onAir: Card[] = [
     cta: "App Store",
   },
   {
+    name: "Idle Cruise Liner Tycoon",
+    status: "Live · App Store & Google Play",
+    tone: "live",
+    text: "An idle tycoon about one cruise liner: fill the ship with guests, grow its decks and run a thirty-day season. One canvas game, shipped in native shells on both stores.",
+    meta: "iOS · Android · HTML5 canvas · 6 languages",
+  },
+  {
     name: "MenuSage",
-    status: "TestFlight beta",
+    status: "Beta · TestFlight & Play internal",
     tone: "beta",
-    text: "One photo of a restaurant menu — or of the plate itself — and it says what to order for your health profile: allergens, macros and nutrition numbers it does not make up.",
-    meta: "iOS · SwiftUI · Gemini",
+    text: "One photo of a restaurant menu — or of the plate itself — and it says what to order for your health profile: allergens, macros and nutrition numbers it does not make up. Asks before any photo goes to the model.",
+    meta: "iOS · Android · SwiftUI · Gemini",
   },
   {
     name: "Crush Check",
-    status: "Beta · both stores",
-    tone: "beta",
+    status: "Live · Google Play",
+    tone: "live",
     text: "A joke red-flag detector: feed it a photo or a chat screenshot, get a verdict. Analysis stays on the device, and a serious safety mode takes over when it stops being funny.",
-    meta: "iOS · Android · on-device ML",
+    meta: "Android live · iOS TestFlight · on-device ML Kit",
   },
   {
     name: "GetDesign",
-    status: "Working v1",
+    status: "Demo build · Cloud Run",
     tone: "beta",
-    text: "A B2B marketplace where brands license fashion designs: watermarked previews out in the open, full tech packs released from escrow once the deal closes.",
-    meta: "Web · Next.js · Firestore",
+    text: "A B2B marketplace where brands license fashion designs: watermarked previews out in the open, full tech packs released from escrow once the deal closes. Running on demo data.",
+    meta: "Web · Next.js · Firestore · Cloud Storage",
   },
 ];
 
@@ -62,8 +69,8 @@ const rack: Card[] = [
     name: "UniversalMMP",
     status: "In production",
     tone: "live",
-    text: "Mobile attribution without AppsFlyer: install matching, a production Swift SDK and live ad-spend connectors. The apps above report into it every day.",
-    meta: "Python · Cloud Run · Postgres",
+    text: "Mobile attribution without AppsFlyer: install matching, a SKAdNetwork backend, outbound postbacks, Swift, Kotlin and Unity SDKs and a live Meta Ads spend connector. The apps above report into it.",
+    meta: "Python · Cloud Run · Cloud SQL Postgres",
   },
   {
     name: "PurchaseKit",
@@ -76,14 +83,14 @@ const rack: Card[] = [
     name: "Marketworthy",
     status: "Internal autopilot",
     tone: "rack",
-    text: "A marketing autopilot with a taste gate: it watches competitors over the public iTunes API, drafts campaigns from evidence, and publishes nothing until a human signs off.",
+    text: "A marketing autopilot with a taste gate: it watches competitors over the public iTunes API, drafts campaigns from evidence, cuts creative shots into a private video, and publishes nothing until a human signs off.",
     meta: "Node · Firebase · iTunes Lookup API",
   },
   {
     name: "Knowledge Vault",
     status: "Always on",
     tone: "rack",
-    text: "An agent-owned wiki that compiles every working session into entity cards, sources and health checks. The copy on this page came out of it — not out of thin air.",
+    text: "An agent-owned wiki that compiles every working session into entity cards, sources and health checks, with an Obsidian second brain built on top. The copy on this page came out of it — not out of thin air.",
     meta: "Markdown · Obsidian · Firestore",
   },
 ];
@@ -112,8 +119,20 @@ const shortWaves: Wave[] = [
     href: "https://github.com/J3d1-fm/MMPredictions",
   },
   {
+    name: "Getaway",
+    text: "Crash-mechanic browser game: outrun the police, cash out before the hidden crash point. Provably 96% RTP, demo credits only.",
+    tag: "Play",
+    href: "https://j3d1-fm.github.io/getaway/",
+  },
+  {
+    name: "Timber",
+    text: "Block-tower crash game on the same engine: every pulled block raises the multiplier until the tower falls. Provably 92% RTP, demo credits only.",
+    tag: "Play",
+    href: "https://j3d1-fm.github.io/timber/",
+  },
+  {
     name: "Genhood",
-    text: "genhood.com rebuilt from Wix into a fast static site with a bold Gen-Z direction.",
+    text: "genhood.com rebuilt from Wix into a plain static site with a bold Gen-Z direction — home of Bloghouse Rivals.",
     tag: "genhood.com",
     href: "https://genhood.com",
   },
@@ -171,7 +190,7 @@ export default function Home() {
 
       <section className="hero frame" id="top">
         <div className="hero-meta mono">
-          <span>Transmission 002</span>
+          <span>Transmission 003</span>
           <span>Independent frequency</span>
         </div>
 
@@ -182,10 +201,10 @@ export default function Home() {
 
         <div className="hero-bottom">
           <p className="hero-copy">
-            A one-person product studio with its own gear: a piano teacher live
-            on the App Store, an AI menu reader in TestFlight, a joke red-flag
-            detector — and home-built attribution, subscriptions and a marketing
-            autopilot wired in behind them.
+            A one-person product studio with its own gear: a piano teacher and
+            a cruise-liner tycoon live in the stores, an AI menu reader in beta,
+            a joke red-flag detector — and home-built attribution,
+            subscriptions and a marketing autopilot wired in behind them.
           </p>
           <a className="signal-link mono" href="#on-air">
             Tune in <span aria-hidden="true">↘</span>
@@ -218,7 +237,7 @@ export default function Home() {
       <section className="band frame" id="on-air">
         <div className="section-kicker mono">
           <span>Freq 01 · On air</span>
-          <span>Shipping now — 04 products</span>
+          <span>Shipping now — 05 products</span>
         </div>
         <div className="card-grid">
           {onAir.map((card) => (
@@ -242,7 +261,7 @@ export default function Home() {
       <section className="band frame" id="short-waves">
         <div className="section-kicker mono">
           <span>Freq 03 · Short waves</span>
-          <span>Smaller transmissions — 06</span>
+          <span>Smaller transmissions — 08</span>
         </div>
         <ul className="waves">
           {shortWaves.map((wave) => (

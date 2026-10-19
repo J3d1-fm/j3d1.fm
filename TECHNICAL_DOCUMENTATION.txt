@@ -1,6 +1,6 @@
 J3D1.FM TECHNICAL DOCUMENTATION
-Version: 0.2.1
-Updated: 2026-09-04
+Version: 0.2.2
+Updated: 2026-10-19
 
 PURPOSE
 Static personal brand website for https://j3d1.fm.
@@ -34,10 +34,19 @@ DOMAIN
 The apex domain j3d1.fm must point to GitHub Pages IP addresses. The repository
 custom domain is j3d1.fm. HTTPS is enabled in GitHub after DNS verification.
 
+CONTENT CONTRACT
+Every product status on the page mirrors an entity card in the owner's
+knowledge vault (wiki/articles/entities). Statuses are updated in the same
+pass as the vault, never from memory. The page is pseudonymous: the export
+test fails if the owner's personal name appears in out/index.html, and the
+name must not appear in commits or metadata either. getdesign.net is not
+linked until it serves real content.
+
 SECURITY
 The site is fully static: no forms, cookies, analytics, secrets or server-side
 credentials are present. External links are limited to the owner's public
-GitHub and LinkedIn profiles.
+GitHub and LinkedIn profiles, the App Store listing, the public GitHub
+Pages demos and the owner's satellite sites.
 
 SUPPLY-CHAIN CONTROLS
 All third-party GitHub Actions used by the Pages workflow are pinned to full

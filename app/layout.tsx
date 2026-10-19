@@ -17,7 +17,7 @@ const mono = localFont({
 });
 
 const description =
-  "One-person product studio on its own frequency: a piano-learning app live on the App Store, an AI menu reader in beta, and self-built attribution, subscription and marketing infrastructure behind them.";
+  "One-person product studio on its own frequency: a piano-learning app and an idle cruise-liner tycoon live in the stores, an AI menu reader in beta, and self-built attribution, subscription and marketing infrastructure behind them.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://j3d1.fm"),

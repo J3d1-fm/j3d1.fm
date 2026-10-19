@@ -21,6 +21,7 @@ test("broadcasts real products instead of filler", async () => {
     html,
     /apps\.apple\.com\/app\/learn-piano-play-songs\/id6784630194/,
   );
+  assert.match(html, /Idle Cruise Liner Tycoon/);
   assert.match(html, /MenuSage/);
   assert.match(html, /Crush Check/);
   assert.match(html, /GetDesign/);
