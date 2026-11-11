@@ -1,3 +1,6 @@
+0.3.1 — 2026-11-11
+Fixed private dashboard navigation by loading its document through an authenticated, bounded POST. Tokens stay out of URLs; existing identity checks and read-only data access remain. The real document URL supports tabs, filters and browser history.
+
 J3D1.FM CHANGELOG
 
 Version 0.3.0 - 2026-11-11

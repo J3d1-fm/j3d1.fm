@@ -55,3 +55,32 @@ test('all report routes require a valid allowed identity and reject writes', asy
     assert.equal((await fetch(url+'/v1/dashboard?release=../current.json',{headers:{Authorization:'Bearer allowed'}})).status,400);
   } finally {await new Promise(resolve => server.close(resolve));}
 });
+
+test('HTML navigation authenticates a bounded POST body and never accepts URL tokens', async () => {
+  let reads=0; let received;
+  const server=createServer(createHandler({config,verifyToken:async token=>{
+    if(token==='allowed')return claims(emails[0]);
+    if(token==='other')return claims('outsider@example.com');
+    throw new Error('invalid');
+  },asset:async(path,res,release)=>{reads++;received={path,release};res.end('private HTML');}}));
+  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+  const url=`http://127.0.0.1:${server.address().port}/v1/embed`,release='b'.repeat(64);
+  const headers={Origin:config.origin,'Content-Type':'application/x-www-form-urlencoded'};
+  const post=(body,h=headers)=>fetch(url,{method:'POST',headers:h,body});
+  try{
+    for(const [token,status] of [['allowed',200],['other',403],['invalid',401],['',401]]){
+      const r=await post(new URLSearchParams({id_token:token,release}));
+      assert.equal(r.status,status);assert.match(r.headers.get('Cache-Control'),/no-store/);
+      if(status!==200)assert.doesNotMatch(await r.text(),/private HTML/);
+    }
+    assert.deepEqual(received,{path:'/v1/dashboard',release});assert.equal(reads,1);
+    for(const origin of ['', 'null','https://evil.example'])assert.equal((await post(new URLSearchParams({id_token:'allowed',release}),{...headers,Origin:origin})).status,403);
+    assert.equal((await post(JSON.stringify({id_token:'allowed',release}),{...headers,'Content-Type':'application/json'})).status,415);
+    assert.equal((await post(new URLSearchParams({id_token:'allowed',release:'../current.json'}))).status,400);
+    assert.equal((await post(`id_token=allowed&id_token=allowed&release=${release}`)).status,400);
+    assert.equal((await post('x'.repeat(32769))).status,413);
+    assert.equal((await fetch(url+'?id_token=allowed&release='+release)).status,405);
+    assert.equal((await post(new URLSearchParams({release})) ).status,400);
+    assert.equal(reads,1);
+  }finally{await new Promise(resolve=>server.close(resolve));}
+});

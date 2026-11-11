@@ -8,7 +8,7 @@ import styles from './reader.module.css';
 
 export default function FinanceReader() {
   const [user, setUser] = useState<User | null>(null);
-  const [html, setHtml] = useState('');
+  const [embed, setEmbed] = useState<{token: string; release: string} | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [asOf, setAsOf] = useState('');
@@ -23,8 +23,8 @@ export default function FinanceReader() {
   function clear() {
     request.current?.abort();
     if (expiry.current) clearTimeout(expiry.current);
-    if (frame.current) frame.current.srcdoc = '';
-    setHtml(''); setUser(null); setAsOf(''); setRelease('');
+    if (frame.current) frame.current.src = 'about:blank';
+    setEmbed(null); setUser(null); setAsOf(''); setRelease('');
   }
   async function logout() {clear(); setError(''); await signOut(auth());}
   async function get(path: string, account: User, signal?: AbortSignal) {
@@ -46,9 +46,10 @@ export default function FinanceReader() {
       const result = await signInWithPopup(auth(), provider);
       const manifest = await (await get('/v1/manifest', result.user, controller.signal)).json();
       if (!/^[a-f0-9]{64}$/.test(manifest.release)) throw new Error('Не удалось проверить версию отчёта.');
-      const document = await (await get('/v1/dashboard?release=' + manifest.release, result.user, controller.signal)).text();
+      const token = await result.user.getIdToken();
       if (controller.signal.aborted) return;
-      setAsOf(manifest.asOf); setRelease(manifest.release); setUser(result.user); setHtml(document);
+      setAsOf(manifest.asOf); setRelease(manifest.release); setUser(result.user);
+      setEmbed({token, release: manifest.release});
       expiry.current = setTimeout(() => {void logout();}, 55 * 60 * 1000);
     } catch (e) {
       const aborted = controller.signal.aborted;
@@ -66,21 +67,39 @@ export default function FinanceReader() {
       a.href = url; a.download = 'DZO_GTR_daily.pdf'; a.click(); setTimeout(() => URL.revokeObjectURL(url),1000);
     } catch(e) {if (!signal.aborted) setError(e instanceof Error ? e.message : 'Не удалось скачать PDF.');}
   }
-  useEffect(() => () => {request.current?.abort(); if (expiry.current) clearTimeout(expiry.current);}, []);
+  useEffect(() => {
+    if (!embed || !frame.current) return;
+    // A real document URL is required by the dashboard's history/navigation API.
+    // POST keeps the short-lived Google token out of URLs and server access logs.
+    const form = document.createElement('form');
+    form.method = 'POST'; form.action = config.apiOrigin + '/v1/embed';
+    form.target = 'finance-report-frame'; form.hidden = true;
+    for (const [name, value] of Object.entries({id_token: embed.token, release: embed.release})) {
+      const input = document.createElement('input'); input.type = 'hidden';
+      input.name = name; input.value = value; form.append(input);
+    }
+    document.body.append(form);
+    try { form.submit(); } finally { form.remove(); }
+  }, [embed]);
+  useEffect(() => () => {
+    request.current?.abort();
+    if (expiry.current) clearTimeout(expiry.current);
+    if (frame.current) frame.current.src = 'about:blank';
+  }, []);
 
   return <main className={styles.page}>
     <header className={styles.header}>
       <a className={styles.brand} href="/">J3D1.FM</a><span className={styles.title}>DZO / GTR</span>
       {user && <><span className={styles.account}>{user.email}</span><button onClick={pdf}>Скачать PDF</button><button onClick={logout}>Выйти</button></>}
     </header>
-    {!html ? <section className={styles.login}>
+    {!embed ? <section className={styles.login}>
       <p className={styles.eyebrow}>DZO / GTR</p><h1>Финансовый дашборд</h1>
       <p>Войдите в Google, чтобы открыть отчёт.</p>
       <button className={styles.primary} disabled={busy} onClick={login}>{busy ? 'Входим и загружаем отчёт…' : 'Войти через Google'}</button>
       {error && <p className={styles.error} role="alert">{error}</p>}
     </section> : <>
       <div className={styles.status}>Данные по {asOf}{error && <span role="alert"> · {error}</span>}</div>
-      <iframe ref={frame} className={styles.dashboard} title="Финансовый дашборд DZO / GTR" srcDoc={html} sandbox="allow-scripts allow-same-origin allow-downloads" referrerPolicy="no-referrer" />
+      <iframe ref={frame} name="finance-report-frame" className={styles.dashboard} title="Финансовый дашборд DZO / GTR" sandbox="allow-scripts allow-same-origin allow-downloads" referrerPolicy="strict-origin" />
     </>}
   </main>;
 }

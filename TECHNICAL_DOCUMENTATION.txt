@@ -1,5 +1,5 @@
 J3D1.FM TECHNICAL DOCUMENTATION
-Version: 0.3.0
+Version: 0.3.1
 Updated: 2026-11-11
 
 PURPOSE
@@ -55,7 +55,8 @@ PRIVATE FINANCE READER
 - Firebase validates signature, audience, issuer and expiry; the API additionally
   requires Google provider, verified email and exact FINANCE_ALLOWED_EMAILS.
 - Missing auth configuration or an auth emulator setting prevents startup.
-- All data routes are authenticated GET-only; no user write endpoints exist.
+- GET endpoints are authenticated; /v1/embed accepts an authenticated navigation
+  POST that only reads the immutable HTML. No user write endpoints exist.
 - GCS bucket is private with uniform access and public access prevention.
 - Responses use no-store. No signed public object URLs are issued.
 - The reader loads its immutable release from /v1/manifest, then pins dashboard
@@ -83,3 +84,22 @@ SUPPLY-CHAIN CONTROLS
 All third-party GitHub Actions used by the Pages workflow are pinned to full
 commit SHAs. Human-readable major-version comments remain next to those pins;
 upgrades require resolving and reviewing a new SHA through the GitHub API.
+
+VERSION 0.3.1 — DOCUMENT NAVIGATION
+The srcDoc reader caused History.pushState SecurityError when switching tabs.
+The parent now POSTs id_token and the pinned release via a temporary hidden
+form targeted at the iframe. /v1/embed requires the exact parent Origin, form
+content type, one token and release field, at most 32768 actual body bytes,
+and the same verified identity allowlist as the GET endpoints. CSP restricts
+framing to the parent site. No bearer URL, cookie or public asset is introduced.
+The frame runs on the API origin, isolated from the parent; logout and expiry
+clear it. Reloading the parent signs in again; iframe GET alone is denied.
+Protected Data runtime files and financial data are unchanged.
+
+0.3.1 LOCAL ACCEPTANCE
+- Static export (5 checks), TypeScript and reader access tests (5 groups) pass.
+- A real cross-origin POST fixture using the published HTML successfully opens
+  the fees and cohort tabs. GT Rivals filtering removes the DZO Google table.
+- No History SecurityError occurs. strict-origin keeps the navigation Origin
+  check intact; logout, expiry and unmount clear the iframe.
+- Production browser acceptance follows deployment.
