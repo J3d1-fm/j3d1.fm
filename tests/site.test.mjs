@@ -13,23 +13,37 @@ test("exports the branded home page", async () => {
   assert.doesNotMatch(html, /Filipp|Mishchenko/i);
 });
 
-test("broadcasts real products instead of filler", async () => {
-  const html = await readFile(new URL("out/index.html", root), "utf8");
+// Everything the portfolio versions (0.2.0 - 0.3.3) used to name. The public
+// site must not mention projects: not on the home page, and not in the shared
+// description that /dzo-gtr/ link previews inherit.
+const projectMentions =
+  /Learn[ -]Piano|Idle Cruise|cruise-liner|MenuSage|Crush Check|GetDesign|UniversalMMP|PurchaseKit|Marketworthy|Knowledge Vault|Playable Forge|Night Run|Personal[ -]Task[ -]Assistant|MMPredictions|Getaway|Timber|Genhood|Bloghouse|Eponymical|apps\.apple\.com|play\.google\.com/i;
 
-  assert.match(html, /Learn Piano: Play Songs/);
-  assert.match(
-    html,
-    /apps\.apple\.com\/app\/learn-piano-play-songs\/id6784630194/,
-  );
-  assert.match(html, /Idle Cruise Liner Tycoon/);
-  assert.match(html, /MenuSage/);
-  assert.match(html, /Crush Check/);
-  assert.match(html, /GetDesign/);
-  assert.match(html, /UniversalMMP/);
-  assert.match(html, /PurchaseKit/);
-  assert.match(html, /Marketworthy/);
-  assert.match(html, /Playable Forge/);
-  assert.match(html, /github\.com\/J3d1-fm\/Personal-Task-Assistant/);
+test("keeps project mentions out of every exported page", async () => {
+  const files = await readdir(new URL("out/", root), {
+    recursive: true,
+    withFileTypes: true,
+  });
+  const pages = files.filter((f) => f.isFile() && /\.(html|txt)$/.test(f.name));
+
+  assert.ok(pages.some((f) => f.name === "index.html"));
+  for (const page of pages) {
+    const body = await readFile(`${page.parentPath}/${page.name}`, "utf8");
+    assert.doesNotMatch(body, projectMentions, `${page.parentPath}/${page.name}`);
+  }
+});
+
+test("links the home page only to the two profiles", async () => {
+  const html = await readFile(new URL("out/index.html", root), "utf8");
+  const external = [...html.matchAll(/<a\b[^>]*\bhref="(https?:[^"]+)"/g)]
+    .map((match) => match[1])
+    .sort();
+
+  assert.deepEqual(external, [
+    "https://github.com/J3d1-fm",
+    "https://www.linkedin.com/in/fmj3d1/",
+  ]);
+  assert.doesNotMatch(html, /id="(on-air|rack|short-waves)"/);
 });
 
 test("keeps self-hosted fonts out of third-party origins", async () => {

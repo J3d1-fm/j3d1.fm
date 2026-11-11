@@ -1,6 +1,6 @@
 J3D1.FM TECHNICAL DOCUMENTATION
-Version: 0.3.3
-Updated: 2026-11-11
+Version: 0.4.0
+Updated: 2026-11-12
 
 PURPOSE
 Static personal brand website for https://j3d1.fm.
@@ -17,14 +17,16 @@ STRUCTURE
 - app/globals.css: complete visual system and responsive behavior
 - app/layout.tsx: metadata, canonical URL and social cards
 - public/og.png: social preview image
+- tools/og.html: source of public/og.png (see SOCIAL CARD)
 - public/CNAME: custom domain declaration
 - .github/workflows/deploy.yml: production deployment
 - tests/site.test.mjs: exported-site acceptance checks
 
 LOCAL VALIDATION
 Run npm test and npm run check. The first command builds the static export and
-verifies the finished HTML, brand copy, absence of a personal name, custom
-domain and social image. The second command validates the TypeScript source.
+verifies the finished HTML, brand copy, absence of a personal name and of
+project mentions, the home page's external links, custom domain and social
+image. The second command validates the TypeScript source.
 
 DEPLOYMENT
 Pushes to main deploy the contents of out/ with the official GitHub Pages
@@ -35,12 +37,27 @@ The apex domain j3d1.fm must point to GitHub Pages IP addresses. The repository
 custom domain is j3d1.fm. HTTPS is enabled in GitHub after DNS verification.
 
 CONTENT CONTRACT
-Every product status on the page mirrors an entity card in the owner's
-knowledge vault (wiki/articles/entities). Statuses are updated in the same
-pass as the vault, never from memory. The page is pseudonymous: the export
-test fails if the owner's personal name appears in out/index.html, and the
-name must not appear in commits or metadata either. getdesign.net is not
-linked until it serves real content.
+The public site names no projects or products. The home page is the brand
+hero, the tuner dial and two profile links (GitHub, LinkedIn). The shared
+description in app/layout.tsx and public/og.png stay equally neutral, because
+/dzo-gtr/ inherits them for its link previews. The export test fails if a
+known project name appears in any exported page or if the home page gains
+another external link. The page is pseudonymous: the export test fails if the
+owner's personal name appears in out/index.html, and the name must not appear
+in commits or metadata either.
+
+SOCIAL CARD
+public/og.png is a 1200x630 render of tools/og.html, which loads the fonts
+from app/fonts. Re-render it with headless Chrome from the repository root:
+  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new \
+    --mute-audio --hide-scrollbars --force-device-scale-factor=1 \
+    --window-size=1200,630 --virtual-time-budget=3000 \
+    --user-data-dir="$(mktemp -d)" --screenshot="$PWD/public/og.png" \
+    "file://$PWD/tools/og.html"
+The separate profile keeps the render away from a running Chrome. tools/og.html
+deliberately omits -webkit-font-smoothing so the type keeps the weight of the
+earlier cards. Messengers cache link previews per URL; a changed card shows up
+there only after their cache expires or is refreshed.
 
 SECURITY
 The homepage remains static. /dzo-gtr/ contains a Google login interface only;
@@ -203,3 +220,27 @@ This acceptance-only documentation commit skips GitHub Actions. Both code
 versions used local build/typecheck/site tests and required Pages deployment;
 the second code build was justified by the observed cross-tab synchronization
 failure. No extra automation or project copies were created.
+
+VERSION 0.4.0 — CLEAN HOME PAGE
+The portfolio is removed from the public site: the On Air, The Rack and Short
+Waves sections, the product copy and stat strip in the hero, the closing
+statement, and the App Store and studio links in the footer. app/page.tsx now
+renders the header, hero, tuner and footer only. The .home class keeps them on
+one screen and is scoped so that the <main> of /dzo-gtr/ is unaffected; styles
+of the removed blocks are deleted from app/globals.css. The root description
+is one neutral sentence, and public/og.png is re-rendered from tools/og.html
+with the product caption replaced. Nothing under app/dzo-gtr or
+services/finance-reader changed. Rollback: revert the 0.4.0 commit.
+
+0.4.0 LOCAL ACCEPTANCE — 2026-11-12
+- Static export, all 6 site acceptance tests and the TypeScript check pass
+  (local Node 22.23.4; the Pages workflow builds on Node 24).
+- The name check finds 27 distinct matches in the previous 0.3.3 home page and
+  none in the new export; a grep of the whole out/ tree, JS chunks included,
+  finds none either.
+- /dzo-gtr/ screenshots at 1440x900 and 390x844 are pixel-identical before and
+  after. Its inherited og:title, og:description and og:image are neutral.
+- Home page checked at 1920x1080, 1440x900, 1280x640, 600x844, 390x844 and
+  360x640: one screen where the viewport allows, no horizontal overflow.
+- The new social card differs from the previous one only in the bottom-left
+  caption; the largest channel difference elsewhere is 10 of 255.

@@ -1,3 +1,6 @@
+0.4.0 — 2026-11-12
+Removed every project mention from the public site. The home page lost the On Air, The Rack and Short Waves sections, the product copy and stat strip in the hero, the closing statement, and the App Store and studio links in the footer; what remains is the hero, the tuner and the GitHub and LinkedIn links. The shared page description and the social card no longer list products, so link previews of / and /dzo-gtr/ are neutral. The export test now fails on any known project name or on an extra external link.
+
 0.3.3 — 2026-11-11
 Fixed immediate sign-out synchronization across open dashboard tabs by initializing Firebase with persistent storage directly. Remembered login and the 30-day limit remain.
 
