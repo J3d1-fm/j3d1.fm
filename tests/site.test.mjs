@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 
 const root = new URL("../", import.meta.url);
@@ -46,4 +46,19 @@ test("ships the custom domain and social card", async () => {
 
   assert.equal(cname.trim(), "j3d1.fm");
   assert.ok(og.byteLength > 20_000);
+});
+
+test('exports the Google login section without a report or financial rows', async () => {
+  const html = await readFile(new URL('out/dzo-gtr/index.html', root), 'utf8');
+  assert.match(html, /Войти через Google/);
+  assert.match(html, /noindex/);
+  assert.doesNotMatch(html, /<iframe|srcDoc|srcdoc/);
+  const files = await readdir(new URL('out/', root), {recursive: true, withFileTypes: true});
+  for (const file of files.filter(f => f.isFile())) {
+    assert.doesNotMatch(file.name, /\.pdf$|\.gz$|snapshot\..*\.json$/);
+    if (/\.(html|js|json|txt)$/.test(file.name)) {
+      const body = await readFile(`${file.parentPath}/${file.name}`, 'utf8');
+      assert.doesNotMatch(body, /data-app-snapshot-sha256|purchaseGross|suppressedOverlappingAfCost/);
+    }
+  }
 });

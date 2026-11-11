@@ -1,5 +1,12 @@
 J3D1.FM CHANGELOG
 
+Version 0.3.0 - 2026-11-11
+- Added /dzo-gtr/ with Google sign-in and a read-only financial dashboard.
+- Moved report delivery behind server-side verified identity and an exact address allowlist; Pages contains only the login interface.
+- Protected PDF download, immutable report versions, session cleanup and no-store responses.
+- Added fail-closed access tests and a check that public exports contain no financial snapshots.
+- Updated Node to 24, Next.js to 16.4.6, and patched dependency advisories.
+
 Version 0.2.2 - 2026-10-19
 - Re-synced every portfolio status with the knowledge-vault entity cards:
   Idle Cruise Liner Tycoon added to On Air (live on the App Store and Google

@@ -1,6 +1,6 @@
 J3D1.FM TECHNICAL DOCUMENTATION
-Version: 0.2.2
-Updated: 2026-10-19
+Version: 0.3.0
+Updated: 2026-11-11
 
 PURPOSE
 Static personal brand website for https://j3d1.fm.
@@ -8,7 +8,7 @@ Static personal brand website for https://j3d1.fm.
 STACK
 - Next.js 16 static export
 - React 19
-- Node.js 22-25 build runtime
+- Node.js 24-25 build runtime
 - CSS-only responsive visual system and signal animation
 - GitHub Pages hosting
 
@@ -43,10 +43,41 @@ name must not appear in commits or metadata either. getdesign.net is not
 linked until it serves real content.
 
 SECURITY
-The site is fully static: no forms, cookies, analytics, secrets or server-side
-credentials are present. External links are limited to the owner's public
-GitHub and LinkedIn profiles, the App Store listing, the public GitHub
-Pages demos and the owner's satellite sites.
+The homepage remains static. /dzo-gtr/ contains a Google login interface only;
+no report, PDF, warehouse credentials or financial rows may be committed here
+or copied into public/ or out/. Firebase web configuration is public application
+identification, not a server credential. Google tokens stay in browser memory.
+
+PRIVATE FINANCE READER
+- Frontend: app/dzo-gtr; Google sign-in through the existing Firebase project.
+- Backend: services/finance-reader, Cloud Run dzo-gtr-finance-reader in europe-west1.
+- Project: project-8d33c4d7-b3cc-40ac-a80.
+- Firebase validates signature, audience, issuer and expiry; the API additionally
+  requires Google provider, verified email and exact FINANCE_ALLOWED_EMAILS.
+- Missing auth configuration or an auth emulator setting prevents startup.
+- All data routes are authenticated GET-only; no user write endpoints exist.
+- GCS bucket is private with uniform access and public access prevention.
+- Responses use no-store. No signed public object URLs are issued.
+- The reader loads its immutable release from /v1/manifest, then pins dashboard
+  and PDF requests to that release. Sign-out clears the frame and cancels reads.
+- View sessions expire after 55 minutes; no financial data enters localStorage.
+- Cloud administrators retain infrastructure permissions; viewer access is
+  enforced by the application independently from infrastructure IAM.
+- Reader deployment preserves its service account and production environment.
+  Run: gcloud run deploy dzo-gtr-finance-reader --source services/finance-reader
+  --region europe-west1 --project project-8d33c4d7-b3cc-40ac-a80
+  --account j3d1fm@gmail.com. Never deploy an unauthenticated data handler.
+- Reader tests: node --test services/finance-reader/tests/*.test.mjs.
+- Roll back the service using its previous Cloud Run revision; roll back Pages
+  with a Git revert. Financial release rollback switches the private current.json
+  pointer to an earlier verified release; no financial files belong in this repo.
+
+VALIDATION 2026-11-11
+- Static export and TypeScript checks passed; access tests cover all data routes,
+  exact allowed identities, invalid/absent tokens, writes, hostile origins,
+  malformed URLs and release path validation.
+- Anonymous live API requests return 401; direct private bucket downloads 403.
+- Google browser sign-in and final Pages deployment are checked at release time.
 
 SUPPLY-CHAIN CONTROLS
 All third-party GitHub Actions used by the Pages workflow are pinned to full
