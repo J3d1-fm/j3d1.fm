@@ -2,10 +2,42 @@ import {createServer} from 'node:http';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {configuration, permitted, createHandler} from '../access.mjs';
+import {SESSION_MAX_AGE_MS, sessionRemainingMs} from '../session.mjs';
 
 const emails = ['ceo@example.com', 'owner@gmail.com', 'direct@example.com'];
 const config = configuration({FIREBASE_PROJECT_ID: 'example', FINANCE_BUCKET: 'private', FINANCE_ALLOWED_EMAILS: emails.join(',')});
-const claims = email => ({email, email_verified: true, firebase: {sign_in_provider: 'google.com'}});
+const claims = email => ({email, email_verified: true, auth_time: Math.floor(Date.now()/1000), firebase: {sign_in_provider: 'google.com'}});
+
+test('session age uses original Google authentication, not refreshed token issue time', () => {
+  const start = 1794355200, now = start * 1000;
+  assert.equal(SESSION_MAX_AGE_MS, 30 * 86400_000);
+  assert.equal(sessionRemainingMs(start, now), 30 * 86400_000);
+  assert.equal(sessionRemainingMs(start, now + 86400_000), 29 * 86400_000);
+  assert.equal(sessionRemainingMs(start, now + SESSION_MAX_AGE_MS - 1), 1);
+  assert.equal(sessionRemainingMs(start, now + SESSION_MAX_AGE_MS), 0);
+  for (const invalid of [null, undefined, '1794355200', NaN, Infinity, 0, -1, start+61]) assert.equal(sessionRemainingMs(invalid, now), 0);
+});
+
+test('every financial route accepts a remembered session and rejects a refreshed token after day 30', async () => {
+  let reads=0;
+  const server=createServer(createHandler({config,verifyToken:async token=>{
+    const age=token==='remembered'?29:token==='expired'?31:null;
+    return {...claims(emails[0]),auth_time:age===null?undefined:Math.floor(Date.now()/1000)-age*86400,iat:Math.floor(Date.now()/1000)};
+  },asset:async(_path,res)=>{reads++;res.end('private report');}}));
+  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+  const base=`http://127.0.0.1:${server.address().port}`;
+  try {
+    for (const path of ['/v1/manifest','/v1/dashboard','/v1/report.pdf','/v1/embed']) {
+      for (const token of ['remembered','expired','missing']) {
+        const embed=path==='/v1/embed';
+        const response=await fetch(base+path,{method:embed?'POST':'GET',headers:{Origin:config.origin,...(embed?{'Content-Type':'application/x-www-form-urlencoded'}:{Authorization:`Bearer ${token}`})},...(embed?{body:new URLSearchParams({id_token:token,release:'a'.repeat(64)})}:{})});
+        assert.equal(response.status,token==='remembered'?200:401);
+        if(token!=='remembered') assert.doesNotMatch(await response.text(),/private report/);
+      }
+    }
+    assert.equal(reads,4);
+  } finally {await new Promise(resolve=>server.close(resolve));}
+});
 
 test('production configuration fails closed', () => {
   for (const env of [{}, {FIREBASE_PROJECT_ID: 'x'}, {FIREBASE_PROJECT_ID: 'x', FINANCE_BUCKET: 'y'}]) assert.throws(() => configuration(env));

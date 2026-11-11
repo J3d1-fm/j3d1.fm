@@ -1,3 +1,6 @@
+0.3.2 — 2026-11-11
+Google login persists for 30 days on the same device. Reloads restore the private report automatically; Firebase renews short-lived tokens. Explicit logout clears the saved session across tabs. The reader checks the original signed login time and the existing exact viewer list on every request.
+
 0.3.1 — 2026-11-11
 Fixed private dashboard navigation by loading its document through an authenticated, bounded POST. Tokens stay out of URLs; existing identity checks and read-only data access remain. The real document URL supports tabs, filters and browser history.
 

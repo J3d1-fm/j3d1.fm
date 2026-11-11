@@ -1,3 +1,5 @@
+import {sessionRemainingMs} from './session.mjs';
+
 export function configuration(env) {
   const projectId = env.FIREBASE_PROJECT_ID?.trim();
   const bucket = env.FINANCE_BUCKET?.trim();
@@ -75,6 +77,7 @@ export function createHandler({config, verifyToken, asset}) {
     if (!token || token.length > 16000) return send(401, 'Google sign-in required');
     let claims;
     try { claims = await verifyToken(token); } catch { return send(401, 'Invalid or expired sign-in'); }
+    if (!sessionRemainingMs(claims?.auth_time)) return send(401, 'Sign in again after 30 days');
     if (!permitted(claims, config.allowedEmails)) return send(403, 'This account does not have access');
     if (release !== null && !/^[a-f0-9]{64}$/.test(release)) return send(400, 'Invalid report version');
     try { await asset(embed ? '/v1/dashboard' : path, res, release); }

@@ -4,3 +4,4 @@
 !package-lock.json
 !access.mjs
 !server.mjs
+!session.mjs

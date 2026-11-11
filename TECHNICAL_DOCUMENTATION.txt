@@ -1,5 +1,5 @@
 J3D1.FM TECHNICAL DOCUMENTATION
-Version: 0.3.1
+Version: 0.3.2
 Updated: 2026-11-11
 
 PURPOSE
@@ -46,7 +46,7 @@ SECURITY
 The homepage remains static. /dzo-gtr/ contains a Google login interface only;
 no report, PDF, warehouse credentials or financial rows may be committed here
 or copied into public/ or out/. Firebase web configuration is public application
-identification, not a server credential. Google tokens stay in browser memory.
+identification, not a server credential. Firebase manages persisted authentication on the device; financial reports are not persisted by the application.
 
 PRIVATE FINANCE READER
 - Frontend: app/dzo-gtr; Google sign-in through the existing Firebase project.
@@ -61,7 +61,7 @@ PRIVATE FINANCE READER
 - Responses use no-store. No signed public object URLs are issued.
 - The reader loads its immutable release from /v1/manifest, then pins dashboard
   and PDF requests to that release. Sign-out clears the frame and cancels reads.
-- View sessions expire after 55 minutes; no financial data enters localStorage.
+- View sessions last at most 30 days from Firebase signed auth_time. Firebase LOCAL persistence restores sign-in after reload/browser close; no report data is stored by the parent application.
 - Cloud administrators retain infrastructure permissions; viewer access is
   enforced by the application independently from infrastructure IAM.
 - Reader deployment preserves its service account and production environment.
@@ -93,7 +93,7 @@ content type, one token and release field, at most 32768 actual body bytes,
 and the same verified identity allowlist as the GET endpoints. CSP restricts
 framing to the parent site. No bearer URL, cookie or public asset is introduced.
 The frame runs on the API origin, isolated from the parent; logout and expiry
-clear it. Reloading the parent signs in again; iframe GET alone is denied.
+clear it. In v0.3.1, reloading the parent required sign-in again; v0.3.2 restores it. Iframe GET alone is denied.
 Protected Data runtime files and financial data are unchanged.
 
 0.3.1 LOCAL ACCEPTANCE
@@ -119,3 +119,37 @@ Protected Data runtime files and financial data are unchanged.
   Evidence is retained only in the private report workspace, outside this repo.
 - This acceptance-only documentation update skips remote CI; the deployed code's
   static export, TypeScript and reader tests have already passed.
+
+VERSION 0.3.2 — REMEMBERED GOOGLE LOGIN
+The previous inMemoryPersistence and 55-minute forced logout caused repeated
+interactive sign-in. browserLocalPersistence now retains the Firebase session;
+onIdTokenChanged restores the allowed user/report after reload and reacts to
+sign-out in another tab. ID tokens retain Firebase's normal short lifetime and
+getIdToken renews them before protected reads. Auth refresh does not reload the
+existing report or discard its filters. No token is placed in a URL or log.
+
+session.mjs is shared by frontend and reader. Its 30-day limit uses signed
+auth_time rather than iat, so refresh cannot extend the interactive-login age.
+The API enforces this on every data route; frontend checks while visible and
+uses bounded daily timers to avoid 32-bit setTimeout overflow. Logout blanks the
+iframe, aborts in-flight reads and calls Firebase signOut to remove persistence.
+Transient load failures retain the authentication for retry; denied requests
+clear it. Existing Google provider/email verification/exact allowlist remain.
+
+The service Dockerfile and upload allowlists include only the shared policy
+module and existing runtime inputs. No new dependencies, data files, roles,
+viewers, schedules, cookies or infrastructure services are introduced.
+Official contracts: https://firebase.google.com/docs/auth/web/auth-state-persistence
+and https://firebase.google.com/docs/auth/admin/manage-sessions.
+Local validation and deployment acceptance are appended below.
+
+0.3.2 LOCAL ACCEPTANCE — 2026-11-11
+- Static production export and all 5 site acceptance tests pass.
+- TypeScript check passes; no financial snapshot/PDF is in public output.
+- Reader/session suite:7 groups pass, including 29-day remembered sessions,
+  all GET/POST data routes rejecting 31-day refreshed tokens, invalid/missing
+  auth_time, fixed 30-day boundary, exact identity/origin and read-only checks.
+- Upload manifest contains only Dockerfile, package manifests and access,
+  server, session modules. No dependencies or evidence copied into the upload.
+- Previous source:a462a7f; previous reader revision:00003-7w8. Existing
+  service account, Firebase project, API origin and private bucket preserved.
