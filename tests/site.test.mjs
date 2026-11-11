@@ -33,14 +33,14 @@ test("keeps project mentions out of every exported page", async () => {
   }
 });
 
-test("links the home page only to the two profiles", async () => {
+test("links the home page only to Telegram and LinkedIn", async () => {
   const html = await readFile(new URL("out/index.html", root), "utf8");
   const external = [...html.matchAll(/<a\b[^>]*\bhref="(https?:[^"]+)"/g)]
     .map((match) => match[1])
     .sort();
 
   assert.deepEqual(external, [
-    "https://github.com/J3d1-fm",
+    "https://t.me/j3d1_fm",
     "https://www.linkedin.com/in/fmj3d1/",
   ]);
   assert.doesNotMatch(html, /id="(on-air|rack|short-waves)"/);

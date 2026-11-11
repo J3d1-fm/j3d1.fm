@@ -1,3 +1,6 @@
+0.4.1 — 2026-11-12
+The GitHub link on the home page is replaced by the Telegram channel t.me/j3d1_fm in the same place.
+
 0.4.0 — 2026-11-12
 Removed every project mention from the public site. The home page lost the On Air, The Rack and Short Waves sections, the product copy and stat strip in the hero, the closing statement, and the App Store and studio links in the footer; what remains is the hero, the tuner and the GitHub and LinkedIn links. The shared page description and the social card no longer list products, so link previews of / and /dzo-gtr/ are neutral. The export test now fails on any known project name or on an extra external link.
 

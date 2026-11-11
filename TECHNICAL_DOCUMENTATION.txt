@@ -1,5 +1,5 @@
 J3D1.FM TECHNICAL DOCUMENTATION
-Version: 0.4.0
+Version: 0.4.1
 Updated: 2026-11-12
 
 PURPOSE
@@ -38,7 +38,7 @@ custom domain is j3d1.fm. HTTPS is enabled in GitHub after DNS verification.
 
 CONTENT CONTRACT
 The public site names no projects or products. The home page is the brand
-hero, the tuner dial and two profile links (GitHub, LinkedIn). The shared
+hero, the tuner dial and two profile links (Telegram, LinkedIn). The shared
 description in app/layout.tsx and public/og.png stay equally neutral, because
 /dzo-gtr/ inherits them for its link previews. The export test fails if a
 known project name appears in any exported page or if the home page gains

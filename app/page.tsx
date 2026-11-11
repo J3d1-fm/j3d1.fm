@@ -48,8 +48,8 @@ export default function Home() {
           <p className="footer-note mono">Stay on frequency.</p>
         </div>
         <nav aria-label="External links">
-          <a href="https://github.com/J3d1-fm" rel="noreferrer">
-            GitHub <span aria-hidden="true">↗</span>
+          <a href="https://t.me/j3d1_fm" rel="noreferrer">
+            Telegram <span aria-hidden="true">↗</span>
           </a>
           <a href="https://www.linkedin.com/in/fmj3d1/" rel="noreferrer">
             LinkedIn <span aria-hidden="true">↗</span>
