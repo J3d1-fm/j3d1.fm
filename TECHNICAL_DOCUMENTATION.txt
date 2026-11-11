@@ -103,3 +103,19 @@ Protected Data runtime files and financial data are unchanged.
 - No History SecurityError occurs. strict-origin keeps the navigation Origin
   check intact; logout, expiry and unmount clear the iframe.
 - Production browser acceptance follows deployment.
+
+0.3.1 PRODUCTION ACCEPTANCE — 2026-11-11
+- Pages run 43048026705 succeeded for 981a76c; Cloud Run revision 00003-7w8
+  serves all traffic. No unrelated project IAM roles were changed.
+- Allowed Google login renders the private report. Tabs and project filters work
+  without History SecurityError. PDF download matches the pinned private release.
+- A real unlisted Google account was denied with no financial content returned.
+- Logout followed by browser Back retains the login screen without report data.
+- Independent access/navigation review passed, including malformed and oversized
+  POSTs, hostile origins and aborted requests. Live anonymous reads remain denied.
+- Private report v1.3 was independently reconciled and published separately.
+  Its current manifest and immutable HTML/PDF match the local reviewed release.
+- Final browser check passed for both projects' store tables and PDF download.
+  Evidence is retained only in the private report workspace, outside this repo.
+- This acceptance-only documentation update skips remote CI; the deployed code's
+  static export, TypeScript and reader tests have already passed.
