@@ -2,7 +2,7 @@
 
 import {useEffect, useRef, useState} from 'react';
 import {initializeApp, getApps} from '@firebase/app';
-import {getAuth, GoogleAuthProvider, browserLocalPersistence, onIdTokenChanged, setPersistence, signInWithPopup, signOut, type User} from '@firebase/auth';
+import {getAuth, initializeAuth, GoogleAuthProvider, browserLocalPersistence, browserPopupRedirectResolver, onIdTokenChanged, signInWithPopup, signOut, type User} from '@firebase/auth';
 import {sessionRemainingMs} from '../../services/finance-reader/session.mjs';
 import config from './public-config.json';
 import styles from './reader.module.css';
@@ -21,7 +21,11 @@ export default function FinanceReader() {
   const authTime = useRef<number | null>(null);
 
   function auth() {
-    return getAuth(getApps().find(a => a.name === 'finance-reader') ?? initializeApp(config.firebase, 'finance-reader'));
+    const existing = getApps().find(a => a.name === 'finance-reader');
+    return existing ? getAuth(existing) : initializeAuth(initializeApp(config.firebase, 'finance-reader'), {
+      persistence: browserLocalPersistence,
+      popupRedirectResolver: browserPopupRedirectResolver,
+    });
   }
   function clear() {
     request.current?.abort();
@@ -82,7 +86,6 @@ export default function FinanceReader() {
   async function login() {
     setBusy(true); setError('');
     try {
-      await setPersistence(auth(), browserLocalPersistence);
       if (auth().currentUser) {await restore(auth().currentUser); return;}
       const provider = new GoogleAuthProvider(); provider.setCustomParameters({prompt: 'select_account'});
       await signInWithPopup(auth(), provider);
@@ -108,11 +111,11 @@ export default function FinanceReader() {
   useEffect(() => {
     let disposed = false; let unsubscribe = () => {};
     setBusy(true);
-    void setPersistence(auth(), browserLocalPersistence).then(() => {
-      if (!disposed) unsubscribe = onIdTokenChanged(auth(), account => {void restore(account);});
-    }).catch(() => {
-      if (!disposed) {setBusy(false); setError('Не удалось восстановить вход. Попробуйте войти ещё раз.');}
-    });
+    try {
+      unsubscribe = onIdTokenChanged(auth(), account => {if (!disposed) void restore(account);});
+    } catch {
+      setBusy(false); setError('Не удалось восстановить вход. Попробуйте войти ещё раз.');
+    }
     const visible = () => {if (document.visibilityState === 'visible') checkSession();};
     document.addEventListener('visibilitychange', visible);
     return () => {
