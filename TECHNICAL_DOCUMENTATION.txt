@@ -174,3 +174,32 @@ Static production build,5site acceptance tests and TypeScript pass after the
 initialization fix. No backend change; previous7server/session tests apply.
 The second Pages build is required by the new observed cross-tab defect; no
 unrelated CI or dependency updates were added.
+
+0.3.3 PRODUCTION ACCEPTANCE — 2026-11-12 Asia/Dubai
+Pages run43091842641 succeeded on20b480fd3bf54ac0134ec32d7a444bf7c5d763c1.
+Cloud Run00004-pjt (reader1.0.2) serves100%traffic. Exact original3-account
+allowlist verified; /ready200, anonymous manifest/dashboard/PDF401.
+Independent publication readback compared live HTML and all7JS chunks with
+the GitHub Pages artifact of this exact run; bytes match. HTML SHA256:
+886ecd800a1ed82e675c41823d17678e05240d7feed000d5a9e9b5a649d4f111.
+
+Real browser: both tabs loaded0.3.3; login inA populatedB; logout inA clearedB
+without reload. After a separate final logout and parent reload, a subsequent
+DOM observation remained at login with no report. Explicit fresh login followed
+by parent reload restored the account/report without a new Google popup.
+An earlier immediately-following-reload observation unexpectedly showed the
+account again; it was not treated as proof of durable logout. The final isolated
+logout/reload repetition above passed. No claim of a30-day real-time wait.
+PDF after restored login matches the immutable financial release. Browser
+console errors:0. Final view left logged in with the corrected1.6.1dashboard.
+Screenshots/review evidence remain in the private report workspace, not Git.
+Reviewer covered7server groups,9lifecycle groups and the installed SDK listener
+path; parent validated against live two-tab behavior and downloaded PDF.
+
+Rollback frontend via a reviewed revert of0.3.3/0.3.2 to a462a7f if the old
+short-session behavior is needed; backendprevious00003-7w8. Financial release
+and its exact viewer allowlist are independent and unchanged by this auth work.
+This acceptance-only documentation commit skips GitHub Actions. Both code
+versions used local build/typecheck/site tests and required Pages deployment;
+the second code build was justified by the observed cross-tab synchronization
+failure. No extra automation or project copies were created.
